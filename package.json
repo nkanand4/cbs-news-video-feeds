@@ -1,0 +1,10 @@
+{
+    "name":	"cbsnews-feed-generator",
+    "description": "CBS News video feeds.",
+    "version": "0.0.1",
+    "main": "index.js",
+    "dependencies": {
+        "node-promise": ">=0.5.10",
+        "jsdom": ">=0.10.2"
+    }
+}
