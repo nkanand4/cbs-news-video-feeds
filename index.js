@@ -1,9 +1,10 @@
-var http = require('./main'),
+var domain = 'www.cbsnews.com',
+    http = require('./main'),
     fs = require('fs'),
     jsdom = require('jsdom'),
     jquery = fs.readFileSync("./jquery.js").toString(),
     defer = require("node-promise").defer,
-    categories = ['cbs-this-morning', 'evening-news'];
+    categories = ['cbs-this-morning', 'evening-news', '60-minutes', '48-hours'];
 
 
 
@@ -27,7 +28,7 @@ function getPlaylistVideoPages(request) {
 
 function fetchPlaylist(playlistType) {
     var request = http.request({
-        hostname: 'www.cbsnews.com',
+        hostname: domain,
         port: 80,
         path: '/videos/topics/'+playlistType+'/',
         method: 'GET'
@@ -36,9 +37,28 @@ function fetchPlaylist(playlistType) {
 }
 
 function get() {
-    fetchPlaylist(categories[1]).then(function(list) {
-        console.log(list);
-    });
+    fetchPlaylist(categories[2]).then(pushToJSONArray);
+
+    function pushToJSONArray(list) {
+        list.forEach(function(item) {
+            http.request({
+                hostname: domain,
+                method: 'GET',
+                path: item + '/'
+            }).then(function(response) {
+                jsdom.env(response, ["http://code.jquery.com/jquery.js"], function(error, win) {
+                    var $ = win.jQuery;
+                    var state = JSON.parse($('#container-video').attr('data-cbsvideoui-options')).state;
+                    var data = {
+                        title: state.title,
+                        url: state.video.image.full,
+                        video: state.video.medias.tablet.uri
+                    };
+                    console.log('info', data);
+                });
+            });
+        });
+    }
 }
 
 get();
