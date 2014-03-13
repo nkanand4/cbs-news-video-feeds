@@ -51,7 +51,8 @@ function get(category) {
                 path: item + '/'
             }).then(function(response) {
                 jsdom.env(response, ["http://code.jquery.com/jquery.js"], function(error, win) {
-                    var state = JSON.parse(win.$('#container-video').attr('data-cbsvideoui-options')).state;
+                    var doc = win.document;
+                    var state = JSON.parse(doc.getElementById('container-video').getAttribute('data-cbsvideoui-options')).state;
                     var device = state.video.medias.tablet ?
                                     state.video.medias.tablet : state.video.medias.mobile ? state.video.medias.mobile : state.video.medias.ios;
                     if(device) {
