@@ -1,0 +1,7 @@
+#!/bin/sh
+WD=~/Developer/workspace/cbsnews
+OUT=$WD/feeds
+for list in cbs-this-morning evening-news 60-minutes 48-hours
+do
+  node $WD/index.js $list > $OUT/$list.json
+done
