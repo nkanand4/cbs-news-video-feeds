@@ -2,9 +2,7 @@ var domain = 'www.cbsnews.com',
     http = require('./main'),
     fs = require('fs'),
     jsdom = require('jsdom'),
-    jquery = fs.readFileSync("./jquery.js").toString(),
     defer = require("node-promise").defer,
-    category = 'cbs-this-morning',
     m3u = [];
     // dummy data
     // 'cbs-this-morning', 'evening-news', '60-minutes', '48-hours'
@@ -32,7 +30,7 @@ function fetchPlaylist(playlistType) {
     var request = http.request({
         hostname: domain,
         port: 80,
-        path: '/videos/topics/'+playlistType+'/',
+        path: playlistType ? '/videos/topics/'+playlistType+'/' : '/videos/',
         method: 'GET'
     });
     return getPlaylistVideoPages(request);
@@ -80,7 +78,5 @@ function writeToFile() {
     console.log(JSON.stringify(data));
 }
 
-if(typeof process.argv[2] !== 'undefined') {
-    category = process.argv[2];
-}
+category = process.argv[2];
 get(category);
